@@ -1484,7 +1484,7 @@ class PlayState extends MusicBeatState {
 			var noteSplash:NoteSplash = grpNoteSplashes.recycle(NoteSplash);
 			noteSplash.setupNoteSplash(daNote.x, daNote.y, daNote.noteData);
 			grpNoteSplashes.add(noteSplash);
-			songAccuracy = noteHit / totalPlayed * 100;
+			songAccuracy = notesHit / totalPlayed * 100;
 		}
 
 		if (!ClientPrefs.botPlay && !ClientPrefs.practice) {
