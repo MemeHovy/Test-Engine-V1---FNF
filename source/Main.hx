@@ -101,9 +101,7 @@ class Main extends Sprite {
 
 		#if html5
 		ClientPrefs.fullscreen = true;
-		ClientPrefs.autoPause = false;
-
-		FlxG.mouse.visible = false;
+		ClientPrefs.autoPause = FlxG.mouse.visible = false;
 		#end
 
 		FlxG.fullscreen = FlxG.save.data.fullscreen;

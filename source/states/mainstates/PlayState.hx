@@ -168,6 +168,10 @@ class PlayState extends MusicBeatState {
 
 	private var vocalsFinished:Bool = false;
 
+	public var songAccuracy:Float = 100;
+
+	var totalPlayed:Float = 0;
+
 	override public function create() {
 		FlxG.mouse.visible = false;
 
@@ -970,7 +974,7 @@ class PlayState extends MusicBeatState {
 			var missText = "";
 			var comboText = "";
 			var noteHitText = "";
-			//var accuracyText = "";
+			var accuracyText = "";
 			var healthText = "";
 			if (ClientPrefs.scoreTxt) {
 				scoreText = "|| Score: " + songScore + " ";
@@ -988,18 +992,16 @@ class PlayState extends MusicBeatState {
 			if (ClientPrefs.healthTxt) {
 				healthText = "|| Health: " + Math.round(health * 50) + "% ";
 			}
-			/*
 			if (ClientPrefs.accuracyTxt) {
 				accuracyText = "|| Accuracy: " + songAccuracy + "% ";
 			}
-			*/
 			if (ClientPrefs.comboTxt) {
 				comboText = "|| Combo: " + combo + " ";
 			}
 			if (ClientPrefs.noteHitTxt) {
 				noteHitText = "|| Notes Hit: " + notesHit + " ";
 			}
-			infoText.text = "" + scoreText + missText + /*accuracyText + */comboText + healthText + noteHitText + "||";
+			infoText.text = "" + scoreText + missText + accuracyText + comboText + healthText + noteHitText + "||";
 		}
 		else
 		{
@@ -1462,16 +1464,19 @@ class PlayState extends MusicBeatState {
 			noteSplash = false;
 			ratingMiss = true;
 			shits++;
+			songAccuracy = noteDiff / Conductor.safeZoneOffset * 0.9;
 		} else if (noteDiff > Conductor.safeZoneOffset * 0.75) {
 			daRating = 'bad';
 			score = 100;
 			noteSplash = false;
 			bads++;
+			songAccuracy = noteDiff / Conductor.safeZoneOffset * 0.75;
 		} else if (noteDiff > Conductor.safeZoneOffset * 0.2) {
 			daRating = 'good';
 			score = 200;
 			noteSplash = false;
 			goods++;
+			songAccuracy = notesHit / Conductor.safeZoneOffset * 0.2; 
 		}
 
 		if (noteSplash && canSplash) {
@@ -1479,6 +1484,7 @@ class PlayState extends MusicBeatState {
 			var noteSplash:NoteSplash = grpNoteSplashes.recycle(NoteSplash);
 			noteSplash.setupNoteSplash(daNote.x, daNote.y, daNote.noteData);
 			grpNoteSplashes.add(noteSplash);
+			songAccuracy = noteHit / totalPlayed * 100;
 		}
 
 		if (!ClientPrefs.botPlay && !ClientPrefs.practice) {
@@ -1772,8 +1778,9 @@ class PlayState extends MusicBeatState {
 			popUpScore(note.strumTime, note, noteHitParams.noteSplashes);
 			combo += 1;
 			notesHit++;
-			if (notesHit == 1 && songMisses == 0)
+			if (notesHit => 0 && songMisses == 0)
 				fcing = true; // ik this is a dumb way to do it but it works!
+			totalPlayed += 1;
 		}
 
 		// hopefully i make the cam offset customizable...
